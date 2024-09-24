@@ -1,0 +1,55 @@
+CREATE DATABASE GestaoFuncionarios;
+
+USE GestaoFuncionarios;
+
+CREATE TABLE Departamentos (
+    id_departamento INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Funcionarios (
+    id_funcionario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50) NOT NULL,
+    salario DECIMAL(10, 2) NOT NULL,
+    id_departamento INT,
+    FOREIGN KEY (id_departamento) REFERENCES Departamentos(id_departamento)
+);
+
+
+CREATE TABLE Salarios (
+    id_salario INT AUTO_INCREMENT PRIMARY KEY,
+    id_funcionario INT,
+    data_salario DATE NOT NULL,
+    valor DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (id_funcionario) REFERENCES Funcionarios(id_funcionario)
+);
+
+INSERT INTO Departamentos (nome) 
+VALUES ('Recursos Humanos'),
+       ('TI'),
+       ('Financeiro');
+
+INSERT INTO Funcionarios (nome, cargo, salario, id_departamento) 
+VALUES ('Alice Silva', 'Gerente', 5000.00, 1),
+       ('Bruno Santos', 'Analista', 3500.00, 2),
+       ('Carlos Lima', 'Assistente', 2500.00, 3);
+
+INSERT INTO Salarios (id_funcionario, data_salario, valor)
+VALUES (1, '2024-09-01', 5000.00),
+       (2, '2024-09-01', 3500.00),
+       (3, '2024-09-01', 2500.00);
+
+SELECT f.nome AS NomeFuncionario, f.cargo AS CargoFuncionario, f.salario AS SalarioFuncionario, d.nome AS NomeDepartamento
+FROM Funcionarios f
+JOIN Departamentos d ON f.id_departamento = d.id_departamento;
+
+SELECT d.nome AS NomeDepartamento, SUM(f.salario) AS SalarioTotal
+FROM Funcionarios f
+JOIN Departamentos d ON f.id_departamento = d.id_departamento
+GROUP BY d.nome;
+
+SELECT f.nome AS NomeFuncionario, s.data_salario AS DataSalario, s.valor AS ValorSalario
+FROM Salarios s
+JOIN Funcionarios f ON s.id_funcionario = f.id_funcionario
+WHERE f.id_funcionario = 1;
